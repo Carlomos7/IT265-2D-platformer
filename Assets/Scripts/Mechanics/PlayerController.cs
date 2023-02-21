@@ -5,6 +5,8 @@ using Platformer.Gameplay;
 using static Platformer.Core.Simulation;
 using Platformer.Model;
 using Platformer.Core;
+using TMPro;
+using UnityEngine.UI;
 
 namespace Platformer.Mechanics
 {
@@ -17,6 +19,11 @@ namespace Platformer.Mechanics
         public AudioClip jumpAudio;
         public AudioClip respawnAudio;
         public AudioClip ouchAudio;
+        
+        public TextMeshProUGUI countText; //test to be updated by point counter
+        
+        public int coinCount;
+        private int count;
 
         /// <summary>
         /// Max horizontal speed of the player.
@@ -49,6 +56,9 @@ namespace Platformer.Mechanics
             collider2d = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
+            count = 0;
+            setCountText();
+            
         }
 
         protected override void Update()
@@ -71,7 +81,15 @@ namespace Platformer.Mechanics
             UpdateJumpState();
             base.Update();
         }
-
+        void setCountText(){ //sets count text
+            countText.text = "Collected: " + count.ToString(); 
+        }
+        private void OnTriggerEnter(Collider other){
+            if(other.gameObject.CompareTag("token")){
+                count++;
+                setCountText();
+            }
+        }
         void UpdateJumpState()
         {
             jump = false;
