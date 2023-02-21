@@ -84,10 +84,11 @@ namespace Platformer.Mechanics
         void setCountText(){ //sets count text
             countText.text = "Collected: " + count.ToString(); 
         }
-        private void OnTriggerEnter(Collider other){
+        private void OnTriggerEnter2D(Collider2D other){
             if(other.gameObject.CompareTag("token")){
                 count++;
                 setCountText();
+                Debug.Log("Token collected");
             }
         }
         void UpdateJumpState()
