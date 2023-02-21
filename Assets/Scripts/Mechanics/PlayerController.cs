@@ -25,6 +25,11 @@ namespace Platformer.Mechanics
         public int coinCount;
         private int count;
 
+        //Double Jump
+        public float doubleJumpTakeOffSpeed = 6;
+        private bool canDoubleJump = true;
+
+
         /// <summary>
         /// Max horizontal speed of the player.
         /// </summary>
@@ -91,21 +96,49 @@ namespace Platformer.Mechanics
                 Debug.Log("Token collected");
             }
         }
-        void UpdateJumpState()
+         void UpdateJumpState()
         {
             jump = false;
             switch (jumpState)
             {
-                case JumpState.PrepareToJump:
-                    jumpState = JumpState.Jumping;
-                    jump = true;
-                    stopJump = false;
+                case JumpState.PrepareToJump: 
+                        jumpState = JumpState.Jumping;
+                        jump = true;
+                        stopJump = false;
+                        canDoubleJump = false; // sets to false when preparomg tp jump
+                    break;
+                case JumpState.DoubleJumping:
+                    if (!IsGrounded && canDoubleJump)
+                    {
+                        velocity.y = doubleJumpTakeOffSpeed * model.jumpModifier;
+                        canDoubleJump = false;
+                        Schedule<PlayerDoubleJumped>().player = this;
+                    }
+                    else if (IsGrounded)
+                    {
+                        jumpState = JumpState.Grounded;
+                    }
+                    else if (!jump)
+                    {
+                        jumpState = JumpState.InFlight;
+                    }
                     break;
                 case JumpState.Jumping:
                     if (!IsGrounded)
                     {
-                        Schedule<PlayerJumped>().player = this;
-                        jumpState = JumpState.InFlight;
+                        if (canDoubleJump && Input.GetButtonDown("Jump"))
+                        {
+                            jumpState = JumpState.DoubleJumping;
+                        }
+                        else
+                        {
+                            canDoubleJump = true; // enable double jump after first jump
+                        }
+                    }
+                    else
+                    {
+                        canDoubleJump = true; // reset double jump on landing
+                         jumpState = JumpState.Grounded;
                     }
                     break;
                 case JumpState.InFlight:
@@ -119,6 +152,7 @@ namespace Platformer.Mechanics
                     jumpState = JumpState.Grounded;
                     break;
             }
+             //Debug.Log("canDoubleJump: " + canDoubleJump);
         }
 
         protected override void ComputeVelocity()
@@ -153,6 +187,7 @@ namespace Platformer.Mechanics
             Grounded,
             PrepareToJump,
             Jumping,
+            DoubleJumping,
             InFlight,
             Landed
         }
