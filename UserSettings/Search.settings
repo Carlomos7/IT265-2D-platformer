@@ -7,9 +7,12 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
-	"last_search.2138236A" = "billboard"
+	"last_search.2138236A" = "Nature"
 	"OpenInspectorPreview.2138236A" = "0"
-	"currentGroup.2138236A" = "all"
+	"currentGroup.2138236A" = "scene"
+	"last_search.DE949528" = "tile pal"
+	"OpenInspectorPreview.DE949528" = "0"
+	"currentGroup.DE949528" = "all"
 }
 providers = {
 	adb = {
@@ -56,6 +59,8 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"Nature"
+	"N"
 	"billboard"
 ]
 searchItemFavorites = [
