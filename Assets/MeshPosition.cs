@@ -7,20 +7,19 @@ public class MeshPosition : MonoBehaviour
 {
     public Camera mainCamera;
     public TextMeshProUGUI textMesh;
-    public float offset = 20f;
+    public Vector2 offset = new Vector2(20f, -20f); // offset from the top-right corner of the camera
     private RectTransform rectTransform;
-    private Vector2 screenBounds;
 
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
-        screenBounds = new Vector2(Screen.width, Screen.height);
     }
 
     void Update()
     {
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenBounds.x - offset, screenBounds.y - offset, mainCamera.nearClipPlane));
-        Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
-        rectTransform.anchoredPosition = new Vector2(screenPosition.x, screenPosition.y);
+        Vector3 screenPosition = mainCamera.WorldToScreenPoint(mainCamera.transform.position);
+        screenPosition += new Vector3(-mainCamera.pixelWidth / 2f, mainCamera.pixelHeight / 2f, 0f); // top-right corner of the camera
+        screenPosition += new Vector3(offset.x, offset.y, 0f); // apply offset
+        rectTransform.anchoredPosition = screenPosition;
     }
 }
